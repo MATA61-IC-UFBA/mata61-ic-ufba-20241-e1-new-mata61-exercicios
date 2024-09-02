@@ -1,22 +1,22 @@
-/* mywc.l */ 
 %{
 #include <stdio.h>
-#include <ctype.h>
-
-int num_lines = 0;
-int num_words = 0;
-int num_chars = 0;
+int chars = 0, words = 0, lines = 0;
 %}
 
 %%
-\n                  { num_lines++; num_chars++; }
-[ \t]+              { num_chars += yyleng; }
-[A-Za-z0-9_]+       { num_words++; num_chars += yyleng; }
-.                   { num_chars++; }
+\n         lines++;
+[ \t]      chars++;
+[^\t\n ]+  { words++; chars += yyleng; }
 %%
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     yylex();
-    printf("Lines: %d\nWords: %d\nChars: %d\n", num_lines, num_words, num_chars);
+    printf("%8d%8d%8d\n", lines, words, chars);
     return 0;
+}
+
+int yywrap(void)
+{
+    return 1;
 }
